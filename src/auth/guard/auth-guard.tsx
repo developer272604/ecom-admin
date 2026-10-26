@@ -23,8 +23,15 @@ type Props = {
   children: React.ReactNode;
 };
 
+// Dev-only escape hatch: set VITE_BYPASS_AUTH=true in .env.local to skip the login redirect.
+const BYPASS_AUTH = import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === 'true';
+
 export default function AuthGuard({ children }: Props) {
   const { loading } = useAuthContext();
+
+  if (BYPASS_AUTH) {
+    return <>{children}</>;
+  }
 
   return <>{loading ? <SplashScreen /> : <Container>{children}</Container>}</>;
 }
